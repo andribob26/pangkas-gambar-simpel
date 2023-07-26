@@ -1,14 +1,28 @@
-import 'dart:io';
-
-import 'package:crop_your_image/crop_your_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../controllers/crop_image_controller.dart';
 
-class Home extends StatelessWidget {
-  Home({super.key});
+class Home extends StatefulWidget {
+  const Home({super.key});
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
   final CropImageController _cropImageC = Get.put(CropImageController());
+
+  @override
+  void initState() {
+    if (_cropImageC.bannerAd != null) {
+      _cropImageC.isAdsBannerLoad = false;
+      _cropImageC.bannerAd!.dispose();
+    }
+    _cropImageC.initBannerAds();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,27 +44,27 @@ class Home extends StatelessWidget {
       body: Center(
         child: Container(
           decoration: const BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
               gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                Colors.blue,
-                Colors.indigo,
-              ])),
+                    Colors.blue,
+                    Colors.indigo,
+                  ])),
           child: Material(
             color: Colors.transparent,
             borderRadius: const BorderRadius.all(Radius.circular(10.0)),
             elevation: 2.0,
             child: InkWell(
               borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-              onTap: () {
-                _cropImageC.uploadImage();
+              onTap: () async {
+                _cropImageC.showInterstisialAds(_cropImageC.uploadImage);
               },
-              child: Container(
+              child: const SizedBox(
                 height: 100.0,
                 width: 100.0,
-                child: const Icon(
+                child: Icon(
                   Icons.image,
                   size: 60.0,
                   color: Colors.white,
@@ -60,6 +74,13 @@ class Home extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: Obx(() => _cropImageC.isAdsBannerLoad
+          ? SizedBox(
+              height: _cropImageC.bannerAd!.size.height.toDouble(),
+              width: _cropImageC.bannerAd!.size.width.toDouble(),
+              child: AdWidget(ad: _cropImageC.bannerAd!),
+            )
+          : const SizedBox()),
     );
   }
 }

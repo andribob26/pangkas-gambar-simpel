@@ -5,12 +5,11 @@ class SplassController extends GetxController {
   final isAnim = Rx<bool>(false);
   @override
   void onInit() {
-    // TODO: implement onInit
     Future.delayed(const Duration(seconds: 1), () {
       isAnim.value = true;
     });
     Future.delayed(const Duration(seconds: 4), () {
-      Get.offAll(Home(),
+      Get.offAll(const Home(),
           duration: const Duration(milliseconds: 500),
           transition: Transition.fade);
     });

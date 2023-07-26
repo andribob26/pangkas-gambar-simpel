@@ -6,14 +6,17 @@ import 'package:pangkas_gambar/screens/home.dart';
 
 class CropImage extends StatelessWidget {
   CropImage({super.key});
+
   final CropImageController _cropImageC = Get.find();
+
   final _cropC = CropController();
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        Get.offAll(() => Home());
+        
+        Get.offAll(const Home());
         _cropImageC.image.value = null;
         _cropImageC.croppedImage.value = null;
         return Future.value(false);
@@ -35,7 +38,11 @@ class CropImage extends StatelessWidget {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
-              Get.offAll(() => Home());
+              Get.offAll(const Home());
+              if (_cropImageC.bannerAd != null) {
+                _cropImageC.isAdsBannerLoad = false;
+                _cropImageC.bannerAd!.dispose();
+              }
               _cropImageC.image.value = null;
               _cropImageC.croppedImage.value = null;
             },
@@ -49,7 +56,7 @@ class CropImage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Expanded(
-                        child: Container(
+                        child: SizedBox(
                           width: MediaQuery.of(context).size.width,
                           child: _cropImageC.image.value != null
                               ? Crop(
@@ -91,10 +98,10 @@ class CropImage extends StatelessWidget {
                                   ..withCircleUi = false
                                   ..aspectRatio = 16 / 9;
                               },
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
+                              child: const Padding(
+                                padding: EdgeInsets.all(12.0),
                                 child: Column(
-                                  children: const [
+                                  children: [
                                     Icon(Icons.crop_16_9),
                                     Text("16:9"),
                                   ],
@@ -107,10 +114,10 @@ class CropImage extends StatelessWidget {
                                   ..withCircleUi = false
                                   ..aspectRatio = 3 / 2;
                               },
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
+                              child: const Padding(
+                                padding: EdgeInsets.all(12.0),
                                 child: Column(
-                                  children: const [
+                                  children: [
                                     Icon(Icons.crop_5_4),
                                     Text("5:4"),
                                   ],
@@ -123,10 +130,10 @@ class CropImage extends StatelessWidget {
                                   ..withCircleUi = false
                                   ..aspectRatio = 1;
                               },
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
+                              child: const Padding(
+                                padding: EdgeInsets.all(12.0),
                                 child: Column(
-                                  children: const [
+                                  children: [
                                     Icon(Icons.crop_portrait),
                                     Text("1:1"),
                                   ],
@@ -139,10 +146,10 @@ class CropImage extends StatelessWidget {
                                   ..withCircleUi = false
                                   ..aspectRatio = 2 / 3;
                               },
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
+                              child: const Padding(
+                                padding: EdgeInsets.all(12.0),
                                 child: Column(
-                                  children: const [
+                                  children: [
                                     RotatedBox(
                                         quarterTurns: 180,
                                         child: Icon(Icons.crop_5_4)),
@@ -153,12 +160,12 @@ class CropImage extends StatelessWidget {
                             ),
                             InkResponse(
                               onTap: () {
-                                _cropC..withCircleUi = false;
+                                _cropC.withCircleUi = false;
                               },
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
+                              child: const Padding(
+                                padding: EdgeInsets.all(12.0),
                                 child: Column(
-                                  children: const [
+                                  children: [
                                     Icon(Icons.crop_free),
                                     Text("Free"),
                                   ],
@@ -178,7 +185,7 @@ class CropImage extends StatelessWidget {
                                 const BorderRadius.all(Radius.circular(50.0)),
                             onTap: () {
                               if (_cropImageC.isCropping.value != true) {
-                                _cropC.crop();
+                                 _cropC.crop();
                               }
                             },
                             child: Container(
@@ -189,7 +196,7 @@ class CropImage extends StatelessWidget {
                                 border: Border.all(
                                   width: 3.0,
                                   color: Colors.indigo,
-                                  strokeAlign: StrokeAlign.outside,
+                                  strokeAlign: BorderSide.strokeAlignOutside,
                                 ),
                               ),
                               height: 45.0,
@@ -248,7 +255,8 @@ class CropImage extends StatelessWidget {
                                       border: Border.all(
                                         width: 3.0,
                                         color: Colors.indigo,
-                                        strokeAlign: StrokeAlign.outside,
+                                        strokeAlign:
+                                            BorderSide.strokeAlignOutside,
                                       ),
                                     ),
                                     child: const Center(
@@ -278,8 +286,7 @@ class CropImage extends StatelessWidget {
                                     _cropImageC.isLoading.value = true;
                                     if (_cropImageC.croppedImage.value !=
                                         null) {
-                                      _cropImageC.saveImage(
-                                          _cropImageC.croppedImage.value!);
+                                      _cropImageC.saveImage(_cropImageC.croppedImage.value!);
                                     }
                                   },
                                   child: Container(
@@ -291,7 +298,8 @@ class CropImage extends StatelessWidget {
                                       border: Border.all(
                                         width: 3.0,
                                         color: Colors.indigo,
-                                        strokeAlign: StrokeAlign.outside,
+                                        strokeAlign:
+                                            BorderSide.strokeAlignOutside,
                                       ),
                                     ),
                                     child: Center(
@@ -326,266 +334,3 @@ class CropImage extends StatelessWidget {
     );
   }
 }
-
-
-// Visibility(
-//             visible: _cropImageC.croppedImage.value == null,
-//             replacement: Column(
-//               children: [
-//                 _cropImageC.croppedImage.value == null
-//                     ? const SizedBox.shrink()
-//                     : Expanded(
-//                         child: Image.memory(_cropImageC.croppedImage.value!)),
-//                 Row(
-//                   children: [
-//                     Expanded(
-//                       child: Padding(
-//                         padding: const EdgeInsets.all(10.0),
-//                         child: Material(
-//                           borderRadius:
-//                               const BorderRadius.all(Radius.circular(50.0)),
-//                           child: InkWell(
-//                             borderRadius:
-//                                 const BorderRadius.all(Radius.circular(50.0)),
-//                             onTap: () {
-//                               _cropImageC.croppedImage.value = null;
-//                             },
-//                             child: Container(
-//                               height: 60.0,
-//                               decoration: BoxDecoration(
-//                                 borderRadius: const BorderRadius.all(
-//                                   Radius.circular(50.0),
-//                                 ),
-//                                 border: Border.all(
-//                                   width: 3.0,
-//                                   color: Colors.indigo,
-//                                   strokeAlign: StrokeAlign.outside,
-//                                 ),
-//                               ),
-//                               child: const Center(
-//                                 child: Text(
-//                                   "Kembali",
-//                                   style: TextStyle(
-//                                     fontSize: 20.0,
-//                                     fontWeight: FontWeight.w400,
-//                                   ),
-//                                 ),
-//                               ),
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                     Expanded(
-//                       child: Padding(
-//                         padding: const EdgeInsets.all(10.0),
-//                         child: Material(
-//                           borderRadius:
-//                               const BorderRadius.all(Radius.circular(50.0)),
-//                           child: InkWell(
-//                             borderRadius:
-//                                 const BorderRadius.all(Radius.circular(50.0)),
-//                             onTap: () {
-//                               // _cropC.crop();
-//                             },
-//                             child: Container(
-//                               height: 60.0,
-//                               decoration: BoxDecoration(
-//                                 borderRadius: const BorderRadius.all(
-//                                   Radius.circular(50.0),
-//                                 ),
-//                                 border: Border.all(
-//                                   width: 3.0,
-//                                   color: Colors.indigo,
-//                                   strokeAlign: StrokeAlign.outside,
-//                                 ),
-//                               ),
-//                               child: const Center(
-//                                 child: Text(
-//                                   "Simpan",
-//                                   style: TextStyle(
-//                                     fontSize: 20.0,
-//                                     fontWeight: FontWeight.w400,
-//                                   ),
-//                                 ),
-//                               ),
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                     )
-//                   ],
-//                 )
-//               ],
-//             ),
-//             child: Column(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               children: [
-//                 Expanded(
-//                   child: Container(
-//                     width: MediaQuery.of(context).size.width,
-//                     child: _cropImageC.image.value != null
-//                         ? Crop(
-//                             progressIndicator: const CircularProgressIndicator(
-//                               color: Colors.indigo,
-//                             ),
-//                             baseColor: Colors.white,
-//                             onStatusChanged: (value) {
-//                               if (value.name == "cropping") {
-//                                 _cropImageC.isCropping.value = true;
-//                               } else {
-//                                 _cropImageC.isCropping.value = false;
-//                               }
-//                             },
-//                             image: _cropImageC.image.value!,
-//                             controller: _cropC,
-//                             onCropped: (image) {
-//                               // do something with image data
-//                               _cropImageC.croppedImage.value = image;
-//                               // _cropImageC.isVisible.value = false;
-//                             },
-//                           )
-//                         : const SizedBox(),
-//                   ),
-//                 ),
-//                 Container(
-//                   padding: const EdgeInsets.only(
-//                     top: 10.0,
-//                     bottom: 10.0,
-//                   ),
-//                   color: Colors.transparent,
-//                   child: Row(
-//                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                     children: [
-//                       InkResponse(
-//                         onTap: () {
-//                           _cropC
-//                             ..withCircleUi = false
-//                             ..aspectRatio = 16 / 9;
-//                         },
-//                         child: Padding(
-//                           padding: const EdgeInsets.all(12.0),
-//                           child: Column(
-//                             children: const [
-//                               Icon(Icons.crop_16_9),
-//                               Text("16:9"),
-//                             ],
-//                           ),
-//                         ),
-//                       ),
-//                       InkResponse(
-//                         onTap: () {
-//                           _cropC
-//                             ..withCircleUi = false
-//                             ..aspectRatio = 3 / 2;
-//                         },
-//                         child: Padding(
-//                           padding: const EdgeInsets.all(12.0),
-//                           child: Column(
-//                             children: const [
-//                               Icon(Icons.crop_5_4),
-//                               Text("5:4"),
-//                             ],
-//                           ),
-//                         ),
-//                       ),
-//                       InkResponse(
-//                         onTap: () {
-//                           _cropC
-//                             ..withCircleUi = false
-//                             ..aspectRatio = 1;
-//                         },
-//                         child: Padding(
-//                           padding: const EdgeInsets.all(12.0),
-//                           child: Column(
-//                             children: const [
-//                               Icon(Icons.crop_portrait),
-//                               Text("1:1"),
-//                             ],
-//                           ),
-//                         ),
-//                       ),
-//                       InkResponse(
-//                         onTap: () {
-//                           _cropC
-//                             ..withCircleUi = false
-//                             ..aspectRatio = 2 / 3;
-//                         },
-//                         child: Padding(
-//                           padding: const EdgeInsets.all(12.0),
-//                           child: Column(
-//                             children: const [
-//                               RotatedBox(
-//                                   quarterTurns: 180,
-//                                   child: Icon(Icons.crop_5_4)),
-//                               Text("4:5"),
-//                             ],
-//                           ),
-//                         ),
-//                       ),
-//                       InkResponse(
-//                         onTap: () {
-//                           _cropC..withCircleUi = false;
-//                         },
-//                         child: Padding(
-//                           padding: const EdgeInsets.all(12.0),
-//                           child: Column(
-//                             children: const [
-//                               Icon(Icons.crop_free),
-//                               Text("Free"),
-//                             ],
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//                 Padding(
-//                   padding: const EdgeInsets.all(10.0),
-//                   child: Material(
-//                     borderRadius: const BorderRadius.all(Radius.circular(50.0)),
-//                     child: InkWell(
-//                       borderRadius:
-//                           const BorderRadius.all(Radius.circular(50.0)),
-//                       onTap: () {
-//                         if (_cropImageC.isCropping.value != true) {
-//                           _cropC.crop();
-//                         }
-//                       },
-//                       child: Container(
-//                         decoration: BoxDecoration(
-//                           borderRadius: const BorderRadius.all(
-//                             Radius.circular(50.0),
-//                           ),
-//                           border: Border.all(
-//                             width: 3.0,
-//                             color: Colors.indigo,
-//                             strokeAlign: StrokeAlign.outside,
-//                           ),
-//                         ),
-//                         height: 60.0,
-//                         width: MediaQuery.of(context).size.width,
-//                         child: Center(
-//                           child: _cropImageC.isCropping.value != true
-//                               ? const Text(
-//                                   "Pangkas",
-//                                   style: TextStyle(
-//                                     fontSize: 20.0,
-//                                     fontWeight: FontWeight.w400,
-//                                   ),
-//                                 )
-//                               : const SizedBox(
-//                                   height: 25.0,
-//                                   width: 25.0,
-//                                   child: CircularProgressIndicator(
-//                                     color: Colors.indigo,
-//                                   ),
-//                                 ),
-//                         ),
-//                       ),
-//                     ),
-//                   ),
-//                 )
-//               ],
-//             ),
-//           )

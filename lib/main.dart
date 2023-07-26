@@ -1,10 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:pangkas_gambar/screens/splass.dart';
 
-void main(List<String> args) {
-  runApp(MyApp());
+void main(List<String> args) async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await MobileAds.instance.initialize();
+  
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -13,6 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       title: "Pangkas Gambar",
       theme: ThemeData(primaryColor: Colors.indigo),
       home: Splass(),
